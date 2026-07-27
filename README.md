@@ -57,8 +57,7 @@ This keeps the project easy to read, fork, and deploy.
 │   ├── products.js
 │   ├── cart.js
 │   └── main.js
-└── images
-    └── products
+└── images/products
 ```
 
 ---
@@ -93,3 +92,8 @@ Design and build by Durga Anand.
 Original site and business: [arngren.net](http://arngren.net/)
 
 Arngren Sky Commuter AS, Oslo, founded 2002 by Frithjof Arngren.
+
+---
+
+<img width="2880" height="1642" alt="Argnren" src="https://github.com/user-attachments/assets/bdcb67ae-6d03-4202-9ba9-422031b77b7e" />
+
