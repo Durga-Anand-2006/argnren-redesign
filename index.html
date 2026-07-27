@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>arngren.no — Guttas Førstevalg!</title>
+<meta name="description" content="A redesign concept for arngren.net (Arngren Sky Commuter AS) — a Norwegian catalog of electric vehicles, robots, electronics, and hobby gear, trading since 2002.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo-badge"><img src="images/products/logo.png" alt="Arngren logo" class="logo-img"><span class="logo-text"><span class="name">arngren.no</span><span class="tagline">Guttas Førstevalg!</span></span></a>
+    <nav class="primary-nav">
+      <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+      <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+      <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+      <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="menu-toggle">Menu</button>
+      <a href="shop.html" class="icon-btn">Search</a>
+      <a href="cart.html" class="icon-btn">Cart <span id="cart-count">0</span></a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">Guttas Førstevalg — Oslo, since 2002</span>
+    <h1>Gadgets, vehicles &amp; the things in between.</h1>
+    <p>Every item catalogued, priced, and specced — so you find what you came for in seconds, not scrolls.</p>
+    <a href="shop.html" class="btn-primary">Browse the catalog</a>
+  </div>
+  <div class="hero-plate" id="hero-plate"></div>
+</section>
+
+<div class="rail">
+  <div class="rail-inner">
+    <a href="shop.html" class="active">All items</a>
+    <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+    <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+    <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+    <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+    <a href="shop.html?cat=Collectibles%20%26%20Models">Collectibles &amp; Models</a>
+  </div>
+</div>
+
+<section class="section" id="browse">
+  <div class="section-head">
+    <h2>Popular right now</h2>
+    <span class="count mono">8 OF 20 ITEMS</span>
+  </div>
+  <div class="grid grid-4" id="product-grid"></div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Arngren</h4>
+      <p>A Norwegian catalog of vehicles, electronics, marine gear and collectibles — trading since 2002.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+      <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+      <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+      <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="contact.html">Contact us</a>
+      <a href="cart.html">Your cart</a>
+      <a href="about.html">About Arngren</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">Our story</a>
+      <a href="contact.html">Store &amp; hours</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ARNGREN.NET — Unofficial redesign concept</span>
+    <span>OSLO, NORWAY</span>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const featuredProduct = getProductById(1); // El-ATV 6000 watt
+  document.getElementById("hero-plate").innerHTML = `
+    <div class="plate-photo">${photoOrPlaceholder(featuredProduct.id, featuredProduct.name)}</div>
+    <div class="plate-row"><span>Category</span><strong>${featuredProduct.category}</strong></div>
+    <div class="plate-row"><span>Model</span><strong class="mono">${featuredProduct.model}</strong></div>
+    <div class="plate-row"><span>Specs</span><strong>${featuredProduct.specs[0]}</strong></div>
+    <div class="plate-row"><span>Stock</span><strong>${featuredProduct.stock}</strong></div>
+    <div class="plate-price">${formatPrice(featuredProduct.price)}</div>
+  `;
+
+  const featured = PRODUCTS.slice(0, 8);
+  document.getElementById("product-grid").innerHTML = featured.map(plateHTML).join("");
+</script>
+</body>
+</html>

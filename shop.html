@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All — Arngren</title>
+<meta name="description" content="Browse the full Arngren catalog by category, price, or search.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo-badge"><img src="images/products/logo.png" alt="Arngren logo" class="logo-img"><span class="logo-text"><span class="name">arngren.no</span><span class="tagline">Guttas Førstevalg!</span></span></a>
+    <nav class="primary-nav">
+      <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+      <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+      <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+      <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="menu-toggle">Menu</button>
+      <a href="shop.html" class="icon-btn active">Search</a>
+      <a href="cart.html" class="icon-btn">Cart <span id="cart-count">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><a href="index.html">Home</a><span class="sep">/</span><span id="crumb-label">Shop all</span></div>
+
+<div class="shop-layout">
+  <aside class="filters">
+    <div class="filter-group">
+      <h4>Category</h4>
+      <div id="category-filters"></div>
+    </div>
+    <div class="filter-group">
+      <h4>Availability</h4>
+      <button class="filter-option" data-avail="all"><span>All items</span></button>
+      <button class="filter-option" data-avail="in"><span>In stock only</span></button>
+      <button class="filter-option" data-avail="low"><span>Low stock</span></button>
+    </div>
+  </aside>
+
+  <div class="shop-main">
+    <div class="shop-toolbar">
+      <input type="text" class="search-input" id="search-input" placeholder="Search the catalog…">
+      <select class="sort-select" id="sort-select">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low to high</option>
+        <option value="price-desc">Price: High to low</option>
+        <option value="name-asc">Name: A–Z</option>
+      </select>
+    </div>
+    <div class="section-head" style="border:none; padding:0; margin-bottom:20px;">
+      <span class="count mono" id="result-count"></span>
+    </div>
+    <div class="grid grid-4" id="product-grid"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Arngren</h4>
+      <p>A Norwegian catalog of vehicles, electronics, marine gear and collectibles — trading since 2002.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+      <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+      <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+      <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="contact.html">Contact us</a>
+      <a href="cart.html">Your cart</a>
+      <a href="about.html">About Arngren</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">Our story</a>
+      <a href="contact.html">Store &amp; hours</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ARNGREN.NET — Unofficial redesign concept</span>
+    <span>OSLO, NORWAY</span>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  let state = {
+    category: params.get("cat") || "all",
+    availability: "all",
+    search: "",
+    sort: "default"
+  };
+
+  const categoryFiltersEl = document.getElementById("category-filters");
+  const gridEl = document.getElementById("product-grid");
+  const resultCountEl = document.getElementById("result-count");
+  const crumbLabel = document.getElementById("crumb-label");
+
+  function renderCategoryFilters(){
+    const counts = CATEGORIES.map(c => ({ name:c, n: PRODUCTS.filter(p=>p.category===c).length }));
+    categoryFiltersEl.innerHTML = `
+      <button class="filter-option ${state.category==='all' ? 'active':''}" data-cat="all">
+        <span>All categories</span><span class="n mono">${PRODUCTS.length}</span>
+      </button>
+      ${counts.map(c => `
+        <button class="filter-option ${state.category===c.name ? 'active':''}" data-cat="${c.name}">
+          <span>${c.name}</span><span class="n mono">${c.n}</span>
+        </button>
+      `).join("")}
+    `;
+    categoryFiltersEl.querySelectorAll("[data-cat]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.category = btn.dataset.cat;
+        renderCategoryFilters();
+        render();
+      });
+    });
+  }
+
+  document.querySelectorAll("[data-avail]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.availability = btn.dataset.avail;
+      document.querySelectorAll("[data-avail]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    });
+  });
+
+  document.getElementById("search-input").addEventListener("input", (e) => {
+    state.search = e.target.value.toLowerCase();
+    render();
+  });
+
+  document.getElementById("sort-select").addEventListener("change", (e) => {
+    state.sort = e.target.value;
+    render();
+  });
+
+  function render(){
+    let items = PRODUCTS.slice();
+
+    if(state.category !== "all"){
+      items = items.filter(p => p.category === state.category);
+    }
+    if(state.availability === "in"){
+      items = items.filter(p => !p.low);
+    }
+    if(state.availability === "low"){
+      items = items.filter(p => p.low);
+    }
+    if(state.search){
+      items = items.filter(p =>
+        p.name.toLowerCase().includes(state.search) ||
+        p.category.toLowerCase().includes(state.search) ||
+        p.model.toLowerCase().includes(state.search)
+      );
+    }
+    if(state.sort === "price-asc") items.sort((a,b) => a.price - b.price);
+    if(state.sort === "price-desc") items.sort((a,b) => b.price - a.price);
+    if(state.sort === "name-asc") items.sort((a,b) => a.name.localeCompare(b.name));
+
+    resultCountEl.textContent = `SHOWING ${items.length} OF ${PRODUCTS.length} ITEMS`;
+    crumbLabel.textContent = state.category === "all" ? "Shop all" : state.category;
+
+    gridEl.innerHTML = items.length
+      ? items.map(plateHTML).join("")
+      : `<div class="empty-state">No items match those filters. Try clearing the search or category.</div>`;
+  }
+
+  renderCategoryFilters();
+  render();
+</script>
+</body>
+</html>

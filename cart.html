@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — Arngren</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo-badge"><img src="images/products/logo.png" alt="Arngren logo" class="logo-img"><span class="logo-text"><span class="name">arngren.no</span><span class="tagline">Guttas Førstevalg!</span></span></a>
+    <nav class="primary-nav">
+      <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+      <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+      <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+      <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="menu-toggle">Menu</button>
+      <a href="shop.html" class="icon-btn">Search</a>
+      <a href="cart.html" class="icon-btn">Cart <span id="cart-count">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><a href="index.html">Home</a><span class="sep">/</span><span>Cart</span></div>
+
+<div class="cart-layout">
+  <div>
+    <h2 style="margin-bottom:24px;">Your cart</h2>
+    <div id="cart-items"></div>
+  </div>
+  <div class="summary">
+    <h3>Order summary</h3>
+    <div class="row"><span>Subtotal</span><span id="subtotal" class="mono">0 kr</span></div>
+    <div class="row"><span>Shipping</span><span class="mono">Calculated at checkout</span></div>
+    <div class="row total"><span>Total</span><span id="total" class="mono">0 kr</span></div>
+    <a href="#" class="btn-primary" onclick="alert('This is a design concept — checkout isn\'t wired up.'); return false;">Checkout</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Arngren</h4>
+      <p>A Norwegian catalog of vehicles, electronics, marine gear and collectibles — trading since 2002.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="shop.html?cat=Electric%20Vehicles">Electric Vehicles</a>
+      <a href="shop.html?cat=Robots%20%26%20RC">Robots &amp; RC</a>
+      <a href="shop.html?cat=Electronics%20%26%20Gadgets">Electronics &amp; Gadgets</a>
+      <a href="shop.html?cat=Outdoor%20%26%20Hobby">Outdoor &amp; Hobby</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="contact.html">Contact us</a>
+      <a href="cart.html">Your cart</a>
+      <a href="about.html">About Arngren</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">Our story</a>
+      <a href="contact.html">Store &amp; hours</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ARNGREN.NET — Unofficial redesign concept</span>
+    <span>OSLO, NORWAY</span>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  function renderCartPage(){
+    const cart = getCart();
+    const itemsEl = document.getElementById("cart-items");
+
+    if(cart.length === 0){
+      itemsEl.innerHTML = `<div class="empty-state" style="border:1px solid var(--hairline);">Your cart is empty. <a href="shop.html" style="color:var(--signal); text-decoration:underline;">Browse the catalog</a>.</div>`;
+      document.getElementById("subtotal").textContent = formatPrice(0);
+      document.getElementById("total").textContent = formatPrice(0);
+      return;
+    }
+
+    let subtotal = 0;
+    itemsEl.innerHTML = cart.map(item => {
+      const p = getProductById(item.id);
+      if(!p) return "";
+      const lineTotal = p.price * item.qty;
+      subtotal += lineTotal;
+      return `
+        <div class="cart-item">
+          <div class="thumb">${photoOrPlaceholder(p.id, p.name)}</div>
+          <div>
+            <h4>${p.name}</h4>
+            <div class="meta">${p.model} · ${formatPrice(p.price)} each</div>
+            <button class="remove" onclick="removeFromCart(${p.id}); renderCartPage();">Remove</button>
+          </div>
+          <div class="qty-control">
+            <button onclick="updateCartQty(${p.id}, ${item.qty - 1}); renderCartPage();">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateCartQty(${p.id}, ${item.qty + 1}); renderCartPage();">+</button>
+          </div>
+          <div class="line-price">${formatPrice(lineTotal)}</div>
+        </div>
+      `;
+    }).join("");
+
+    document.getElementById("subtotal").textContent = formatPrice(subtotal);
+    document.getElementById("total").textContent = formatPrice(subtotal);
+  }
+
+  renderCartPage();
+</script>
+</body>
+</html>
